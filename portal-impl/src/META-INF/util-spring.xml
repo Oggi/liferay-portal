@@ -289,6 +289,11 @@
 			<bean class="com.liferay.portal.util.FileImpl" />
 		</property>
 	</bean>
+	<bean id="com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil" class="com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil">
+		<property name="friendlyURLNormalizer">
+			<bean class="com.liferay.portal.util.FriendlyURLNormalizerImpl" />
+		</property>
+	</bean>
 	<bean id="com.liferay.portal.kernel.util.HashCodeFactoryUtil" class="com.liferay.portal.kernel.util.HashCodeFactoryUtil">
 		<property name="hashCodeFactory">
 			<bean class="com.liferay.portal.util.HashCodeFactoryImpl" />
@@ -379,6 +384,11 @@
 			</bean>
 		</property>
 	</bean>
+	<bean id="com.liferay.portal.security.auth.AuthenticatedUserUUIDStoreUtil" class="com.liferay.portal.security.auth.AuthenticatedUserUUIDStoreUtil">
+		<property name="authenticatedUserUUIDStore">
+			<bean class="com.liferay.portal.security.auth.DefaultAuthenticatedUserUUIDStoreImpl" />
+		</property>
+	</bean>
 	<bean id="com.liferay.portal.security.auth.AuthTokenUtil" class="com.liferay.portal.security.auth.AuthTokenUtil">
 		<property name="authToken">
 			<bean class="com.liferay.portal.security.auth.AuthTokenImpl" />
@@ -467,6 +477,11 @@
 	<bean id="com.liferay.portal.service.permission.RolePermissionUtil" class="com.liferay.portal.service.permission.RolePermissionUtil">
 		<property name="rolePermission">
 			<bean class="com.liferay.portal.service.permission.RolePermissionImpl" />
+		</property>
+	</bean>
+	<bean id="com.liferay.portal.service.permission.SubscriptionPermissionUtil" class="com.liferay.portal.service.permission.SubscriptionPermissionUtil">
+		<property name="subscriptionPermission">
+			<bean class="com.liferay.portal.service.permission.SubscriptionPermissionImpl" />
 		</property>
 	</bean>
 	<bean id="com.liferay.portal.service.permission.TeamPermissionUtil" class="com.liferay.portal.service.permission.TeamPermissionUtil">

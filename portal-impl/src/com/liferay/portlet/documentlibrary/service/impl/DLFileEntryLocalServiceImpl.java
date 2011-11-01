@@ -44,7 +44,6 @@ import com.liferay.portal.repository.liferayrepository.model.LiferayFileEntry;
 import com.liferay.portal.repository.liferayrepository.model.LiferayFileVersion;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.PortalUtil;
-import com.liferay.portal.util.PortletKeys;
 import com.liferay.portal.util.PrefsPropsUtil;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.documentlibrary.DuplicateFileException;
@@ -52,19 +51,17 @@ import com.liferay.portlet.documentlibrary.DuplicateFolderNameException;
 import com.liferay.portlet.documentlibrary.FileNameException;
 import com.liferay.portlet.documentlibrary.ImageSizeException;
 import com.liferay.portlet.documentlibrary.InvalidFileEntryTypeException;
-import com.liferay.portlet.documentlibrary.NoSuchFileEntryException;
 import com.liferay.portlet.documentlibrary.NoSuchFileEntryMetadataException;
 import com.liferay.portlet.documentlibrary.NoSuchFileException;
 import com.liferay.portlet.documentlibrary.NoSuchFileVersionException;
-import com.liferay.portlet.documentlibrary.NoSuchFolderException;
 import com.liferay.portlet.documentlibrary.model.DLFileEntry;
 import com.liferay.portlet.documentlibrary.model.DLFileEntryConstants;
 import com.liferay.portlet.documentlibrary.model.DLFileEntryMetadata;
 import com.liferay.portlet.documentlibrary.model.DLFileEntryType;
 import com.liferay.portlet.documentlibrary.model.DLFileVersion;
+import com.liferay.portlet.documentlibrary.model.DLFolder;
 import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
 import com.liferay.portlet.documentlibrary.model.DLSyncConstants;
-import com.liferay.portlet.documentlibrary.model.FileModel;
 import com.liferay.portlet.documentlibrary.model.impl.DLFileEntryImpl;
 import com.liferay.portlet.documentlibrary.service.base.DLFileEntryLocalServiceBaseImpl;
 import com.liferay.portlet.documentlibrary.store.DLStoreUtil;
@@ -192,7 +189,7 @@ public class DLFileEntryLocalServiceImpl
 
 		// Index
 
-		index(dlFileEntry, serviceContext);
+		reindex(dlFileEntry);
 
 		return dlFileEntry;
 	}
@@ -307,7 +304,7 @@ public class DLFileEntryLocalServiceImpl
 
 		// Index
 
-		index(dlFileEntry, serviceContext);
+		reindex(dlFileEntry);
 
 		if (serviceContext.getWorkflowAction() ==
 		 		WorkflowConstants.ACTION_PUBLISH) {
@@ -432,7 +429,7 @@ public class DLFileEntryLocalServiceImpl
 
 			// Index
 
-			index(dlFileEntry, serviceContext);
+			reindex(dlFileEntry);
 		}
 
 		return dlFileEntry;
@@ -980,9 +977,7 @@ public class DLFileEntryLocalServiceImpl
 
 			// Indexer
 
-			Indexer indexer = IndexerRegistryUtil.getIndexer(DLFileEntry.class);
-
-			indexer.reindex(dlFileEntry);
+			reindex(dlFileEntry);
 		}
 		else {
 
@@ -1114,6 +1109,7 @@ public class DLFileEntryLocalServiceImpl
 		dlFileVersion.setUserName(versionUserName);
 		dlFileVersion.setCreateDate(modifiedDate);
 		dlFileVersion.setRepositoryId(dlFileEntry.getRepositoryId());
+		dlFileVersion.setFolderId(dlFileEntry.getFolderId());
 		dlFileVersion.setFileEntryId(dlFileEntry.getFileEntryId());
 		dlFileVersion.setExtension(extension);
 		dlFileVersion.setMimeType(mimeType);
@@ -1162,9 +1158,7 @@ public class DLFileEntryLocalServiceImpl
 			(DLUtil.compareVersions(
 				dlFileEntry.getVersion(), dlFileVersion.getVersion()) <= 0)) {
 
-			Indexer indexer = IndexerRegistryUtil.getIndexer(DLFileEntry.class);
-
-			indexer.reindex(dlFileEntry);
+			reindex(dlFileEntry);
 		}
 	}
 
@@ -1277,16 +1271,9 @@ public class DLFileEntryLocalServiceImpl
 
 		// Index
 
-		FileModel fileModel = new FileModel();
+		Indexer indexer = IndexerRegistryUtil.getIndexer(DLFileEntry.class);
 
-		fileModel.setCompanyId(dlFileEntry.getCompanyId());
-		fileModel.setFileName(dlFileEntry.getName());
-		fileModel.setPortletId(PortletKeys.DOCUMENT_LIBRARY);
-		fileModel.setRepositoryId(dlFileEntry.getDataRepositoryId());
-
-		Indexer indexer = IndexerRegistryUtil.getIndexer(FileModel.class);
-
-		indexer.delete(fileModel);
+		indexer.delete(dlFileEntry);
 	}
 
 	protected String getExtension(String title, String sourceFileName) {
@@ -1363,29 +1350,6 @@ public class DLFileEntryLocalServiceImpl
 		return versionParts[0] + StringPool.PERIOD + versionParts[1];
 	}
 
-	protected void index(
-			DLFileEntry dlFileEntry, ServiceContext serviceContext)
-		throws SearchException {
-
-		Indexer indexer = IndexerRegistryUtil.getIndexer(
-			FileModel.class);
-
-		FileModel fileModel = new FileModel();
-
-		fileModel.setAssetCategoryIds(serviceContext.getAssetCategoryIds());
-		fileModel.setAssetTagNames(serviceContext.getAssetTagNames());
-		fileModel.setCompanyId(serviceContext.getCompanyId());
-		fileModel.setFileEntryId(dlFileEntry.getFileEntryId());
-		fileModel.setFileName(dlFileEntry.getName());
-		fileModel.setGroupId(dlFileEntry.getGroupId());
-		fileModel.setModifiedDate(dlFileEntry.getModifiedDate());
-		fileModel.setPortletId(PortletKeys.DOCUMENT_LIBRARY);
-		fileModel.setProperties(dlFileEntry.getLuceneProperties());
-		fileModel.setRepositoryId(dlFileEntry.getDataRepositoryId());
-
-		indexer.reindex(fileModel);
-	}
-
 	protected Lock lockFileEntry(long userId, long fileEntryId)
 		throws PortalException, SystemException {
 
@@ -1444,24 +1408,15 @@ public class DLFileEntryLocalServiceImpl
 
 		// Index
 
-		Indexer indexer = IndexerRegistryUtil.getIndexer(
-			FileModel.class);
-
-		FileModel fileModel = new FileModel();
-
-		fileModel.setCompanyId(user.getCompanyId());
-		fileModel.setFileName(dlFileEntry.getName());
-		fileModel.setPortletId(PortletKeys.DOCUMENT_LIBRARY);
-		fileModel.setRepositoryId(oldDataRepositoryId);
-
-		indexer.delete(fileModel);
-
-		fileModel.setGroupId(dlFileEntry.getGroupId());
-		fileModel.setRepositoryId(dlFileEntry.getDataRepositoryId());
-
-		indexer.reindex(fileModel);
+		reindex(dlFileEntry);
 
 		return dlFileEntry;
+	}
+
+	protected void reindex(DLFileEntry dlFileEntry) throws SearchException {
+		Indexer indexer = IndexerRegistryUtil.getIndexer(DLFileEntry.class);
+
+		indexer.reindex(dlFileEntry);
 	}
 
 	protected void unlockFileEntry(long fileEntryId) throws SystemException {
@@ -1576,7 +1531,7 @@ public class DLFileEntryLocalServiceImpl
 
 				// Index
 
-				index(dlFileEntry, serviceContext);
+				reindex(dlFileEntry);
 			}
 
 			if (autoCheckIn) {
@@ -1648,23 +1603,20 @@ public class DLFileEntryLocalServiceImpl
 			long groupId, long folderId, long fileEntryId, String title)
 		throws PortalException, SystemException {
 
-		try {
-			dlFolderLocalService.getFolder(groupId, folderId, title);
+		DLFolder dlFolder = dlFolderPersistence.fetchByG_P_N(
+			groupId, folderId, title);
 
+		if (dlFolder != null) {
 			throw new DuplicateFolderNameException(title);
 		}
-		catch (NoSuchFolderException nsfe) {
-		}
 
-		try {
-			DLFileEntry dlFileEntry =
-				dlFileEntryPersistence.findByG_F_T(groupId, folderId, title);
+		DLFileEntry dlFileEntry = dlFileEntryPersistence.fetchByG_F_T(
+			groupId, folderId, title);
 
-			if (dlFileEntry.getFileEntryId() != fileEntryId) {
-				throw new DuplicateFileException(title);
-			}
-		}
-		catch (NoSuchFileEntryException nsfee) {
+		if ((dlFileEntry != null) &&
+			(dlFileEntry.getFileEntryId() != fileEntryId)) {
+
+			throw new DuplicateFileException(title);
 		}
 	}
 

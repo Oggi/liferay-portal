@@ -618,6 +618,7 @@ create table DLFileVersion (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	repositoryId LONG,
+	folderId LONG,
 	fileEntryId LONG,
 	extension VARCHAR(75) null,
 	mimeType VARCHAR(75) null,
@@ -1249,8 +1250,7 @@ create table Organization_ (
 	organizationId LONG not null primary key,
 	companyId LONG,
 	parentOrganizationId LONG,
-	leftOrganizationId LONG,
-	rightOrganizationId LONG,
+	treePath STRING null,
 	name VARCHAR(100) null,
 	type_ VARCHAR(75) null,
 	recursable BOOLEAN,
@@ -1907,7 +1907,7 @@ create table SocialActivitySetting (
 	classNameId LONG,
 	activityType INTEGER,
 	name VARCHAR(75) null,
-	value VARCHAR(75) null
+	value VARCHAR(1024) null
 );
 
 create table SocialEquityAssetEntry (

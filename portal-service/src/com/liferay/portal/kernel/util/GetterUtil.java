@@ -71,7 +71,10 @@ public class GetterUtil {
 		if (value instanceof String) {
 			return get((String)value, defaultValue);
 		}
-		else if (value.getClass().isAssignableFrom(Boolean.class)) {
+
+		Class<?> clazz = value.getClass();
+
+		if (clazz.isAssignableFrom(Boolean.class)) {
 			return (Boolean)value;
 		}
 
@@ -88,7 +91,10 @@ public class GetterUtil {
 		if (value instanceof String) {
 			return get((String)value, dateFormat, defaultValue);
 		}
-		else if (value.getClass().isAssignableFrom(Date.class)) {
+
+		Class<?> clazz = value.getClass();
+
+		if (clazz.isAssignableFrom(Date.class)) {
 			return (Date)value;
 		}
 
@@ -103,8 +109,17 @@ public class GetterUtil {
 		if (value instanceof String) {
 			return get((String)value, defaultValue);
 		}
-		else if (value.getClass().isAssignableFrom(Double.class)) {
+
+		Class<?> clazz = value.getClass();
+
+		if (clazz.isAssignableFrom(Double.class)) {
 			return (Double)value;
+		}
+
+		if (value instanceof Number) {
+			Number number = (Number)value;
+
+			return number.doubleValue();
 		}
 
 		return defaultValue;
@@ -118,8 +133,17 @@ public class GetterUtil {
 		if (value instanceof String) {
 			return get((String)value, defaultValue);
 		}
-		else if (value.getClass().isAssignableFrom(Float.class)) {
+
+		Class<?> clazz = value.getClass();
+
+		if (clazz.isAssignableFrom(Float.class)) {
 			return (Float)value;
+		}
+
+		if (value instanceof Number) {
+			Number number = (Number)value;
+
+			return number.floatValue();
 		}
 
 		return defaultValue;
@@ -133,8 +157,17 @@ public class GetterUtil {
 		if (value instanceof String) {
 			return get((String)value, defaultValue);
 		}
-		else if (value.getClass().isAssignableFrom(Integer.class)) {
+
+		Class<?> clazz = value.getClass();
+
+		if (clazz.isAssignableFrom(Integer.class)) {
 			return (Integer)value;
+		}
+
+		if (value instanceof Number) {
+			Number number = (Number)value;
+
+			return number.intValue();
 		}
 
 		return defaultValue;
@@ -148,8 +181,17 @@ public class GetterUtil {
 		if (value instanceof String) {
 			return get((String)value, defaultValue);
 		}
-		else if (value.getClass().isAssignableFrom(Long.class)) {
+
+		Class<?> clazz = value.getClass();
+
+		if (clazz.isAssignableFrom(Long.class)) {
 			return (Long)value;
+		}
+
+		if (value instanceof Number) {
+			Number number = (Number)value;
+
+			return number.longValue();
 		}
 
 		return defaultValue;
@@ -172,26 +214,30 @@ public class GetterUtil {
 				return getFloat(value);
 			}
 		}
-		else if (value.getClass().isAssignableFrom(Byte.class)) {
+
+		Class<?> clazz = value.getClass();
+
+		if (clazz.isAssignableFrom(Byte.class)) {
 			return (Byte)value;
 		}
-		else if (value.getClass().isAssignableFrom(Double.class)) {
+		else if (clazz.isAssignableFrom(Double.class)) {
 			return (Double)value;
 		}
-		else if (value.getClass().isAssignableFrom(Float.class)) {
+		else if (clazz.isAssignableFrom(Float.class)) {
 			return (Float)value;
 		}
-		else if (value.getClass().isAssignableFrom(Integer.class)) {
+		else if (clazz.isAssignableFrom(Integer.class)) {
 			return (Integer)value;
 		}
-		else if (value.getClass().isAssignableFrom(Long.class)) {
+		else if (clazz.isAssignableFrom(Long.class)) {
 			return (Long)value;
 		}
-		else if (value.getClass().isAssignableFrom(Number.class)) {
-			return (Number)value;
-		}
-		else if (value.getClass().isAssignableFrom(Short.class)) {
+		else if (clazz.isAssignableFrom(Short.class)) {
 			return (Short)value;
+		}
+
+		if (value instanceof Number) {
+			return (Number)value;
 		}
 
 		return defaultValue;
@@ -205,8 +251,17 @@ public class GetterUtil {
 		if (value instanceof String) {
 			return get((String)value, defaultValue);
 		}
-		else if (value.getClass().isAssignableFrom(Short.class)) {
+
+		Class<?> clazz = value.getClass();
+
+		if (clazz.isAssignableFrom(Short.class)) {
 			return (Short)value;
+		}
+
+		if (value instanceof Number) {
+			Number number = (Number)value;
+
+			return number.shortValue();
 		}
 
 		return defaultValue;
@@ -665,6 +720,17 @@ public class GetterUtil {
 			}
 			else if (componentType.isAssignableFrom(Long.class)) {
 				return (long[])value;
+			}
+			else if (Number.class.isAssignableFrom(componentType)) {
+				Number[] numbers = (Number[])value;
+
+				long[] values = new long[numbers.length];
+
+				for (int i = 0; i < values.length; i++) {
+					values[i] = numbers[i].longValue();
+				}
+
+				return values;
 			}
 		}
 

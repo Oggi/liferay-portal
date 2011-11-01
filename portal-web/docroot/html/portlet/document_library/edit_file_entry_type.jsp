@@ -31,6 +31,12 @@ long ddmStructureId = BeanParamUtil.getLong(ddmStructure, request, "structureId"
 
 String script = BeanParamUtil.getString(ddmStructure, request, "xsd");
 
+JSONArray scriptJSONArray = null;
+
+if (Validator.isNotNull(script)) {
+	scriptJSONArray = DDMXSDUtil.getJSONArray(script);
+}
+
 List<DDMStructure> ddmStructures = null;
 
 if (fileEntryType != null) {
@@ -138,8 +144,8 @@ String scopeAvailableFields = ParamUtil.getString(request, "scopeAvailableFields
 					width:680
 				},
 				saveCallback: '<%= renderResponse.getNamespace() + "selectDDMStructure" %>',
-				showManageTemplates: 'false',
-				showToolbar: 'true',
+				showManageTemplates: false,
+				showToolbar: true,
 				storageType: 'xml',
 				structureName: '<liferay-ui:message key="metadata-sets" />',
 				structureType: 'com.liferay.portlet.documentlibrary.model.DLFileEntryMetadata',

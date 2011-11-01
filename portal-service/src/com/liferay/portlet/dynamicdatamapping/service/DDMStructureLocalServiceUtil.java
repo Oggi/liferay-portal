@@ -158,6 +158,12 @@ public class DDMStructureLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery);
 	}
 
+	public static com.liferay.portlet.dynamicdatamapping.model.DDMStructure fetchDDMStructure(
+		long structureId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().fetchDDMStructure(structureId);
+	}
+
 	/**
 	* Returns the d d m structure with the primary key.
 	*
@@ -304,6 +310,14 @@ public class DDMStructureLocalServiceUtil {
 			.addStructureResources(structure, groupPermissions, guestPermissions);
 	}
 
+	public static com.liferay.portlet.dynamicdatamapping.model.DDMStructure copyStructure(
+		long userId, long structureId,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService().copyStructure(userId, structureId, serviceContext);
+	}
+
 	public static void deleteStructure(
 		com.liferay.portlet.dynamicdatamapping.model.DDMStructure structure)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -403,40 +417,40 @@ public class DDMStructureLocalServiceUtil {
 	}
 
 	public static java.util.List<com.liferay.portlet.dynamicdatamapping.model.DDMStructure> search(
-		long companyId, long groupId, long[] classNameIds,
+		long companyId, long[] groupIds, long[] classNameIds,
 		java.lang.String keywords, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return getService()
-				   .search(companyId, groupId, classNameIds, keywords, start,
+				   .search(companyId, groupIds, classNameIds, keywords, start,
 			end, orderByComparator);
 	}
 
 	public static java.util.List<com.liferay.portlet.dynamicdatamapping.model.DDMStructure> search(
-		long companyId, long groupId, long[] classNameIds,
+		long companyId, long[] groupIds, long[] classNameIds,
 		java.lang.String name, java.lang.String description,
 		java.lang.String storageType, boolean andOperator, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return getService()
-				   .search(companyId, groupId, classNameIds, name, description,
-			storageType, andOperator, start, end, orderByComparator);
+				   .search(companyId, groupIds, classNameIds, name,
+			description, storageType, andOperator, start, end, orderByComparator);
 	}
 
-	public static int searchCount(long companyId, long groupId,
+	public static int searchCount(long companyId, long[] groupIds,
 		long[] classNameIds, java.lang.String keywords)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return getService()
-				   .searchCount(companyId, groupId, classNameIds, keywords);
+				   .searchCount(companyId, groupIds, classNameIds, keywords);
 	}
 
-	public static int searchCount(long companyId, long groupId,
+	public static int searchCount(long companyId, long[] groupIds,
 		long[] classNameIds, java.lang.String name,
 		java.lang.String description, java.lang.String storageType,
 		boolean andOperator)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return getService()
-				   .searchCount(companyId, groupId, classNameIds, name,
+				   .searchCount(companyId, groupIds, classNameIds, name,
 			description, storageType, andOperator);
 	}
 

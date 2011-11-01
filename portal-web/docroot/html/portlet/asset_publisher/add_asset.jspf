@@ -63,7 +63,7 @@ Map<String, PortletURL> addPortletURLs = getAddPortletURLs(liferayPortletRequest
 
 			defaultAssetPublisherPortletId = typeSettingsProperties.getProperty(LayoutTypePortletConstants.DEFAULT_ASSET_PUBLISHER_PORTLET_ID);
 
-			if (defaultAssetPublisherPortletId != null) {
+			if (defaultAssetPublisher) {
 				addPortletURLString = HttpUtil.addParameter(addPortletURLString, "layoutUuid", layout.getUuid());
 			}
 
@@ -92,6 +92,8 @@ public PortletURL getAddPortletURL(LiferayPortletRequest liferayPortletRequest, 
 	if (assetRendererFactory == null) {
 		return null;
 	}
+
+	liferayPortletRequest.setAttribute(WebKeys.ASSET_RENDERER_FACTORY_CLASS_TYPE_ID, classTypeId);
 
 	PortletURL addPortletURL = assetRendererFactory.getURLAdd(liferayPortletRequest, liferayPortletResponse);
 

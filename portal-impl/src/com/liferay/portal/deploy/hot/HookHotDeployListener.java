@@ -241,6 +241,7 @@ public class HookHotDeployListener
 		"terms.of.use.required",
 		"theme.css.fast.load",
 		"theme.images.fast.load",
+		"theme.jsp.override.enabled",
 		"theme.loader.new.theme.id.on.import",
 		"theme.portlet.decorate.default",
 		"theme.portlet.sharing.default",
@@ -260,6 +261,8 @@ public class HookHotDeployListener
 		"users.form.update.miscellaneous",
 		"users.full.name.generator",
 		"users.full.name.validator",
+		"users.image.max.height",
+		"users.image.max.width",
 		"users.screen.name.always.autogenerate",
 		"users.screen.name.generator",
 		"users.screen.name.validator",
@@ -2166,6 +2169,7 @@ public class HookHotDeployListener
 		"terms.of.use.required",
 		"theme.css.fast.load",
 		"theme.images.fast.load",
+		"theme.jsp.override.enabled",
 		"theme.loader.new.theme.id.on.import",
 		"theme.portlet.decorate.default",
 		"theme.portlet.sharing.default",
@@ -2175,6 +2179,8 @@ public class HookHotDeployListener
 	};
 
 	private static final String[] _PROPS_VALUES_INTEGER = new String[] {
+		"users.image.max.height",
+		"users.image.max.width",
 	};
 
 	private static final String[] _PROPS_VALUES_LONG = new String[] {
